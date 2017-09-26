@@ -21,6 +21,7 @@ def repeat_atom(seq_diagram, axis, proto_atom, n_rep, dur, intensity, init_shift
     :return: List of AxisAtoms
     '''
     assert (isinstance(proto_atom, atoms.AxesAtom))
+    proto_atom = copy.copy(proto_atom)
 
     multiple_durations = False
     if isinstance(dur, (list, tuple, set)):
@@ -54,7 +55,7 @@ def repeat_atom(seq_diagram, axis, proto_atom, n_rep, dur, intensity, init_shift
         if total_dur > epi_dur:
             rep_atoms.append(misc.Line(seq_diagram, axis, total_dur - epi_dur, plot_kw=plot_kw))
 
-    return rep_atoms
+    return seq_diagram.set_axis(rep_atoms, axis)
 
 
 def repeat_atom_spaced(seq_diagram, axis, proto_atom, n_rep, dur, intensity, spacing, init_shift= None, total_dur=None, proto_space=None, plot_kw={}):
@@ -74,9 +75,12 @@ def repeat_atom_spaced(seq_diagram, axis, proto_atom, n_rep, dur, intensity, spa
     """
     assert(spacing >= dur)
     assert(isinstance(proto_atom, atoms.AxesAtom))
+    proto_atom = copy.copy(proto_atom)
 
     if proto_space is None:
         proto_space = misc.Line(seq_diagram, axis, spacing - dur, plot_kw=plot_kw)
+    else:
+        proto_space = copy.copy(proto_space)
 
     if init_shift is None:
         init_shift = spacing - dur/2
@@ -106,7 +110,7 @@ def repeat_atom_spaced(seq_diagram, axis, proto_atom, n_rep, dur, intensity, spa
         if total_dur > epi_dur:
             rep_atoms.append(misc.Line(seq_diagram, axis, total_dur - epi_dur, plot_kw=plot_kw))
 
-    return rep_atoms
+    return seq_diagram.set_axis(rep_atoms, axis)
 
 
 def get_epi_readout(seq_diagram, axis, n_rep, read_dur, read_intensity, init_shift=None, total_dur=None, read_grad=None, plot_kw={}):
@@ -122,6 +126,16 @@ def get_epi_blips(seq_diagram, axis, n_rep, blip_dur, blip_intensity, blip_spaci
 
     if blip_grad is None:
         blip_grad = gradients.BlipGrad(seq_diagram, axis, blip_dur, blip_intensity, plot_kw=plot_kw)
+
+    if total_dur is None:
+        total_dur = blip_spacing * (n_rep+1)
+        if not (init_shift is None):
+            total_dur += init_shift
+
+    if init_shift is None:
+        init_shift = blip_spacing
+    else:
+        init_shift += blip_spacing
 
     blip_pattern *= int(n_rep / len(blip_pattern) + 1)
     blip_intensity = [blip_intensity * blip for blip in blip_pattern[:n_rep]]

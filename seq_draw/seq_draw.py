@@ -97,6 +97,8 @@ class SeqDiagram(object):
         else:
             if isinstance(atom, atoms.AxesAtom):
                 atom = copy.copy(atom)
+                if isinstance(atom, atoms.AtomIterator):
+                    atom.atom = copy.copy(atom.atom)
                 atom.sqaxis = new_axis
             else:
                 raise Exception('Argument atom needs to be a subclass of AxisAtom or a list of AxisAtoms, but atom is ' + type(atom))
@@ -110,7 +112,7 @@ class SeqDiagram(object):
                 return atom.duration
         raise Exception('Argument atom needs to be a subclass of AxisAtom or a list of AxisAtoms, but atom is ' + type(atom))
 
-    def fill(self, axes=None, plot_kw={}):
+    def fill(self, axes=None, tp=None, plot_kw={}):
         if axes is None:
             axes = self.sqaxes.keys()
 
@@ -125,6 +127,11 @@ class SeqDiagram(object):
             if max_sum < sums[ax]:
                 max_sum = sums[ax]
                 max_ax = ax
-        for ax in set(axes) - set(ax):
+
+        if (not (tp is None)) and tp >= max_sum:
+            max_sum = tp
+            max_ax = None
+
+        for ax in set(axes) - set([max_ax]):
             self.add_atom(misc.Line(self, ax, max_sum - sums[ax], plot_kw=plot_kw))
         pass

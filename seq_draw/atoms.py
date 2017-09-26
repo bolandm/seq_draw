@@ -108,12 +108,13 @@ class AxesAtom(object):
 
 
 class ArbitraryPulse(AxesAtom):
-    def __init__(self, seq_diagram, axis, duration, intensity, pulse):
+    def __init__(self, seq_diagram, axis, duration, intensity, pulse, plot_kw={}):
         super(ArbitraryPulse, self).__init__(seq_diagram)
         self.sqaxis = axis
         self.duration = duration
         self.intensity = intensity
         self.pulse = pulse
+        self._update_plot_kw(plot_kw)
         pass
 
     def _draw(self):
@@ -123,8 +124,8 @@ class ArbitraryPulse(AxesAtom):
 
 
 class ArbLabeledPulse(ArbitraryPulse):
-    def __init__(self, seq_diagram, axis, duration, intensity, pulse, label='', label_coord=None):
-        super(ArbLabeledPulse, self).__init__(seq_diagram, axis, duration, intensity, pulse)
+    def __init__(self, seq_diagram, axis, duration, intensity, pulse, label='', label_coord=None, plot_kw={}, font_kw={}):
+        super(ArbLabeledPulse, self).__init__(seq_diagram, axis, duration, intensity, pulse, plot_kw=plot_kw)
         if label_coord is None:
             self.label_coord = (0, self.intensity)
         else:
@@ -135,6 +136,7 @@ class ArbLabeledPulse(ArbitraryPulse):
         self.font_kw['verticalalignment'] = 'top'
         self.font_kw['horizontalalignment'] = 'left'
         self.font_kw['size'] = 'medium'
+        self._update_font_kw(font_kw)
         pass
 
     def _draw(self):

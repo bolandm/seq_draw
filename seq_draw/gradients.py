@@ -112,3 +112,57 @@ class TrapGradTable(atoms.AtomIterator):
             raise Exception('Unknown arrow position')
         self.arrow_yoff = 0.1
         pass
+
+    @property
+    def origin(self):
+        return self.atom.origin
+
+    @origin.setter
+    def origin(self, origin):
+        self.atom.origin = origin
+        pass
+
+    @property
+    def duration(self):
+        return self.atom.duration
+
+    @duration.setter
+    def duration(self, duration):
+        self.atom.duration = duration
+        pass
+
+    @property
+    def sqaxis(self):
+        return self.atom.sqaxis
+
+    @sqaxis.setter
+    def sqaxis(self, axis):
+        self.atom.sqaxis = axis
+        pass
+
+    @property
+    def plot_kw(self):
+        return self.atom.plot_kw
+
+    @plot_kw.setter
+    def plot_kw(self, plot_kw):
+        self.atom.plot_kw = plot_kw
+        pass
+
+    @property
+    def font_kw(self):
+        return self.atom.font_kw
+
+    @font_kw.setter
+    def font_kw(self, font_kw):
+        self.atom.font_kw = font_kw
+        pass
+
+    @property
+    def do_update_origin(self):
+        return self.atom.do_update_origin
+
+    @do_update_origin.setter
+    def do_update_origin(self, do_update_origin):
+        self.atom.do_update_origin = do_update_origin
+        pass
