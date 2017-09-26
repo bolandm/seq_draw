@@ -13,6 +13,19 @@ class SeqDiagram(object):
         self.sqaxes = {}
         pass
 
+    def __str__(self):
+        _str = ''
+        for axis in self.sqaxes.keys():
+            _str += 'Axis {0:s}:\n'.format(axis)
+            time_sum = 0.0
+            for i, atom in enumerate(self.sqaxes[axis]['atoms']):
+                _str += '  {0:2.3f}: {1:s}\n'.format(time_sum, atom)
+                time_sum += atom.duration
+            _str += 'Sum {0:2.3f}\n'.format(time_sum)
+        return _str
+
+    __repr__ = __str__
+
     @property
     def ax(self):
         return self._ax
@@ -69,10 +82,10 @@ class SeqDiagram(object):
 
     def draw(self, debug=False, debug_intensity=0.075, debug_labels=True):
         for axis in self.sqaxes.keys():
-            for pulse in self.sqaxes[axis]['atoms']:
+            for i, pulse in enumerate(self.sqaxes[axis]['atoms']):
                 pulse.draw()
                 if debug:
-                    pulse.draw_debug(intensity=debug_intensity, label=debug_labels)
+                    pulse.draw_debug(intensity=debug_intensity, label=debug_labels, index=i)
         # reset origin
         for axis in self.sqaxes.keys():
             self.sqaxes[axis]['offset_x'] = self.sqaxes[axis]['offset_x_init']

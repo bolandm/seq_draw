@@ -13,6 +13,12 @@ class AxesAtom(object):
         self._origin = None
         pass
 
+    def __str__(self):
+        return '{0:s}(Axis=\'{1:s}\', duration={2:1.2f})'.format(type(self).__name__, self.sqaxis, self.duration)
+
+    def __repr__(self):
+        return '{0:s}(Axis=\'{1:s}\', duration={2:1.2f})'.format(type(self).__name__, self.sqaxis, self.duration)
+
     @property
     def origin(self):
         return self._origin
@@ -72,7 +78,7 @@ class AxesAtom(object):
             self.update_origin()
         pass
 
-    def draw_debug(self, intensity, label):
+    def draw_debug(self, intensity, label, index):
         sqa = self.sq.sqaxes[self.sqaxis]
         self.sq.ax.plot([sqa['offset_x'] - self.duration, sqa['offset_x'] - self.duration],
                         [sqa['offset_y'] - intensity, sqa['offset_y']+intensity],
@@ -80,7 +86,8 @@ class AxesAtom(object):
         self.sq.ax.plot([sqa['offset_x'], sqa['offset_x']], [sqa['offset_y'] - intensity, sqa['offset_y'] + intensity],
                         **{'color': 'red', 'linestyle': 'solid', 'linewidth': 2.})
         if label:
-            self.sq.ax.text(sqa['offset_x'] - self.duration / 2, sqa['offset_y'] - intensity, type(self).__name__,
+            _label = '{0:s}\n{1}'.format(type(self).__name__, index)
+            self.sq.ax.text(sqa['offset_x'] - self.duration / 2, sqa['offset_y'] - intensity, _label,
                             **{'size': 'xx-small', 'verticalalignment': 'center', 'horizontalalignment': 'center'})
 
     def _update_plot_kw(self, new_kw):

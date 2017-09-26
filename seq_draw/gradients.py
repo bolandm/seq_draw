@@ -14,12 +14,13 @@ class TrapGrad(atoms.AxesAtom):
     def __init__(self, seq_diagram, axis, duration, intensity, ft_ramp_ratio=1.0, plot_kw={}, font_kw={}):
         super(TrapGrad, self).__init__(seq_diagram)
         self.sqaxis = axis
-        self.duration = duration
+        self.ft_ramp_ratio = ft_ramp_ratio
         self.intensity = intensity
+        self._duration = duration
+        self.ft_dur = duration / (1. + 1. / self.ft_ramp_ratio)
+        self.ramp_dur = duration / (2. * self.ft_ramp_ratio + 2.)
         self._update_plot_kw(plot_kw)
         self._update_font_kw(font_kw)
-        self.ft_dur = duration / (1. + 1. / ft_ramp_ratio)
-        self.ramp_dur = duration / (2. * ft_ramp_ratio + 2.)
 
     def _draw(self):
         sqa = self.sq.sqaxes[self.sqaxis]
@@ -28,6 +29,15 @@ class TrapGrad(atoms.AxesAtom):
         self.sq.ax.plot([sqa['offset_x'] + self.ramp_dur, sqa['offset_x'] + self.ramp_dur + self.ft_dur], [sqa['offset_y'] + self.intensity, sqa['offset_y'] + self.intensity], **self.plot_kw)
         self.sq.ax.plot([sqa['offset_x'] + self.ramp_dur + self.ft_dur, sqa['offset_x'] + self.duration], [sqa['offset_y'] + self.intensity, sqa['offset_y']], **self.plot_kw)
 
+    @property
+    def duration(self):
+        return self._duration
+
+    @duration.setter
+    def duration(self, duration):
+        self._duration = duration
+        self.ft_dur = duration / (1. + 1. / self.ft_ramp_ratio)
+        self.ramp_dur = duration / (2. * self.ft_ramp_ratio + 2.)
 
 class RectGrad(TrapGrad):
     def __init__(self, seq_diagram, axis, duration, intensity, plot_kw={}, font_kw={}):
