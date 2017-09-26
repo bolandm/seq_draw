@@ -72,6 +72,17 @@ class AxesAtom(object):
             self.update_origin()
         pass
 
+    def draw_debug(self, intensity, label):
+        sqa = self.sq.sqaxes[self.sqaxis]
+        self.sq.ax.plot([sqa['offset_x'] - self.duration, sqa['offset_x'] - self.duration],
+                        [sqa['offset_y'] - intensity, sqa['offset_y']+intensity],
+                        **{'color': 'red', 'linestyle': 'solid', 'linewidth': 2.})
+        self.sq.ax.plot([sqa['offset_x'], sqa['offset_x']], [sqa['offset_y'] - intensity, sqa['offset_y'] + intensity],
+                        **{'color': 'red', 'linestyle': 'solid', 'linewidth': 2.})
+        if label:
+            self.sq.ax.text(sqa['offset_x'] - self.duration / 2, sqa['offset_y'] - intensity, type(self).__name__,
+                            **{'size': 'xx-small', 'verticalalignment': 'center', 'horizontalalignment': 'center'})
+
     def _update_plot_kw(self, new_kw):
         for key in new_kw.keys():
             self.plot_kw[key] = new_kw[key]
@@ -181,7 +192,7 @@ class AtomIterator(AxesAtom):
         return self.atom.plot_kw
 
     @plot_kw.setter
-    def plot_kw(self):
+    def plot_kw(self, plot_kw):
         self.atom.plot_kw = plot_kw
         pass
 

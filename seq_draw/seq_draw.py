@@ -1,12 +1,7 @@
 import matplotlib.pyplot as plt
-import numpy as np
 import copy
-from enum import Enum
-from atoms import *
-from rf_pulses import *
-from gradients import *
-from overlays import *
-from labels import *
+import atoms
+import misc
 
 
 class SeqDiagram(object):
@@ -31,14 +26,16 @@ class SeqDiagram(object):
         pass
 
     def add_axis(self, name, offset_x, offset_y, label=None, label_duration=0.9, plot_kw={}, font_kw={}):
-        if (name in self.sqaxes.keys()):
+        if name in self.sqaxes.keys():
             raise Exception('Axis ' + str(name) + ' alreadiy exists.')
 
         self.init_axis(name)
         self.sqaxes[name]['offset_x'] = offset_x
         self.sqaxes[name]['offset_y'] = offset_y
+        self.sqaxes[name]['offset_x_init'] = offset_x
+        self.sqaxes[name]['offset_y_init'] = offset_y
         if not (label is None):
-            self.add_atom(AxisLabel(self, name, label, label_duration, plot_kw=plot_kw, font_kw=font_kw))
+            self.add_atom(misc.AxisLabel(self, name, label, label_duration, plot_kw=plot_kw, font_kw=font_kw))
         pass
 
     def init_axis(self, name):
@@ -70,16 +67,22 @@ class SeqDiagram(object):
             else:
                 raise Exception('Unknown axis ' + atom.sqaxis + '. Possible values are ' + str(self.sqaxes.keys()))
 
-    def draw(self):
+    def draw(self, debug=False, debug_intensity=0.075, debug_labels=True):
         for axis in self.sqaxes.keys():
             for pulse in self.sqaxes[axis]['atoms']:
                 pulse.draw()
+                if debug:
+                    pulse.draw_debug(intensity=debug_intensity, label=debug_labels)
+        # reset origin
+        for axis in self.sqaxes.keys():
+            self.sqaxes[axis]['offset_x'] = self.sqaxes[axis]['offset_x_init']
+            self.sqaxes[axis]['offset_y'] = self.sqaxes[axis]['offset_y_init']
 
     def set_axis(self, atom, new_axis):
         if isinstance(atom, (list, tuple)):
             atom = [self.set_axis(a, new_axis) for a in atom]
         else:
-            if isinstance(atom, AxesAtom):
+            if isinstance(atom, atoms.AxesAtom):
                 atom = copy.copy(atom)
                 atom.sqaxis = new_axis
             else:
@@ -90,6 +93,25 @@ class SeqDiagram(object):
         if isinstance(atom, (list, tuple)):
             return sum([self.get_total_duration(a) for a in atom])
         else:
-            if isinstance(atom, AxesAtom):
+            if isinstance(atom, atoms.AxesAtom):
                 return atom.duration
         raise Exception('Argument atom needs to be a subclass of AxisAtom or a list of AxisAtoms, but atom is ' + type(atom))
+
+    def fill(self, axes=None, plot_kw={}):
+        if axes is None:
+            axes = self.sqaxes.keys()
+
+        # compute sum
+        sums = {}
+        max_sum = 0.0
+        max_ax = axes[0]
+        for ax in axes:
+            sums[ax] = 0.0
+            for atom in self.sqaxes[ax]['atoms']:
+                sums[ax] += atom.duration
+            if max_sum < sums[ax]:
+                max_sum = sums[ax]
+                max_ax = ax
+        for ax in set(axes) - set(ax):
+            self.add_atom(misc.Line(self, ax, max_sum - sums[ax], plot_kw=plot_kw))
+        pass
