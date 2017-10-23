@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -8,7 +10,7 @@ class AxesAtom(object):
         self._sqaxis = self.sq.sqaxes.keys()[0]
         self._duration = 0.0
         self._do_update_origin = True
-        self._plot_kw = {'color': 'black', 'linestyle': 'solid'}
+        self._plot_kw = {'color': 'black', 'linestyle': 'solid', 'solid_capstyle': 'round', 'solid_joinstyle': 'round'}
         self._font_kw = {}
         self._origin = None
         pass

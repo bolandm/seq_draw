@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 class OverlayObject(object):
     def __init__(self, seq_diagram, plot_kw={}, font_kw={}):
         self.sq = seq_diagram
@@ -70,7 +72,7 @@ class VerticalLine(OverlayObject):
 
 
 class Bra(VerticalLine):
-    def __init__(self, seq_diagram, xpos, xlen=3, ymin=0., ymax=0.85, plot_kw={}):
+    def __init__(self, seq_diagram, xpos, xlen=0.3, ymin=0., ymax=0.85, plot_kw={}):
         super(Bra, self).__init__(seq_diagram, xpos, ymin=ymin, ymax=ymax, plot_kw=plot_kw)
         self.xlen = xlen
 
@@ -81,7 +83,7 @@ class Bra(VerticalLine):
 
 
 class Ket(Bra):
-    def __init__(self, seq_diagram, xpos, xlen=3, ymin=0., ymax=0.85, plot_kw={}):
+    def __init__(self, seq_diagram, xpos, xlen=0.3, ymin=0., ymax=0.85, plot_kw={}):
         super(Ket, self).__init__(seq_diagram, xpos, xlen=xlen, ymin=ymin, ymax=ymax, plot_kw=plot_kw)
         self.xlen = -xlen
 

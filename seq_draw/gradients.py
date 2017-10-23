@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import atoms
 import numpy as np
 from enum import Enum

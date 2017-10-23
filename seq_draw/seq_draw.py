@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import matplotlib.pyplot as plt
 import copy
 import atoms
@@ -59,11 +61,11 @@ class SeqDiagram(object):
         del self.sqaxes[name]['atoms'][keep_first:]
         pass
 
-    def init_axes(self, label_duration=0.5, plot_kw={}, font_kw={}):
-        self.add_axis('rf', 0.0, 0.7, 'RF', label_duration)
-        self.add_axis('gx', 0.0, 0.5, 'GX', label_duration)
-        self.add_axis('gy', 0.0, 0.3, 'GY', label_duration)
-        self.add_axis('gz', 0.0, 0.1, 'GZ', label_duration)
+    def init_axes(self, label_duration=0.5, plot_kw=dict(), font_kw=dict()):
+        self.add_axis('rf', 0.0, 0.7, '$RF$', label_duration)
+        self.add_axis('gx', 0.0, 0.5, '$G_{R}$', label_duration)
+        self.add_axis('gy', 0.0, 0.3, '$G_{P}$', label_duration)
+        self.add_axis('gz', 0.0, 0.1, '$G_{S}$', label_duration)
         pass
 
     def reset_axes(self):

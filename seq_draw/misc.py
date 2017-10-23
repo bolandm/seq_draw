@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import atoms
 
 
@@ -12,10 +14,15 @@ class Interruption(atoms.AxesAtom):
 
     def _draw(self):
         sqa = self.sq.sqaxes[self.sqaxis]
-        self.sq.ax.plot([sqa['offset_x'], sqa['offset_x'] + self.duration], [sqa['offset_y'], sqa['offset_y']], **self.plot_kw)
-        self.sq.ax.plot([sqa['offset_x'] + 0.1*self.duration, sqa['offset_x'] + 0.7*self.duration], [sqa['offset_y'] - self.intensity, sqa['offset_y'] + self.intensity], **self.plot_kw)
-        self.sq.ax.plot([sqa['offset_x'] + 0.3 * self.duration, sqa['offset_x'] + 0.9 * self.duration],
+        self.sq.ax.plot([sqa['offset_x'], sqa['offset_x'] + 0.35*self.duration], [sqa['offset_y'], sqa['offset_y']],
+                        **self.plot_kw)
+        self.sq.ax.plot([sqa['offset_x'] + 0.65 * self.duration, sqa['offset_x'] + self.duration],
+                        [sqa['offset_y'], sqa['offset_y']], **self.plot_kw)
+        self.sq.ax.plot([sqa['offset_x'] + 0.2*self.duration, sqa['offset_x'] + 0.6*self.duration],
                         [sqa['offset_y'] - self.intensity, sqa['offset_y'] + self.intensity], **self.plot_kw)
+        self.sq.ax.plot([sqa['offset_x'] + 0.4 * self.duration, sqa['offset_x'] + 0.8 * self.duration],
+                        [sqa['offset_y'] - self.intensity, sqa['offset_y'] + self.intensity], **self.plot_kw)
+        pass
 
 
 class AxisLabel(atoms.AxesAtom):
