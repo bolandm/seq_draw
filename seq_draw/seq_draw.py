@@ -50,7 +50,7 @@ class SeqDiagram(object):
         self.sqaxes[name]['offset_x_init'] = offset_x
         self.sqaxes[name]['offset_y_init'] = offset_y
         if not (label is None):
-            self.add_atom(misc.AxisLabel(self, name, label, label_duration, plot_kw=plot_kw, font_kw=font_kw))
+            self.add_atom(misc.AxisLabel(self, name, label, label_duration, plot_kw=plot_kw, font_kw=font_kw), axis=name)
         pass
 
     def init_axis(self, name):
@@ -62,20 +62,22 @@ class SeqDiagram(object):
         pass
 
     def init_axes(self, label_duration=0.5, plot_kw=dict(), font_kw=dict()):
-        self.add_axis('rf', 0.0, 0.7, '$RF$', label_duration)
-        self.add_axis('gx', 0.0, 0.5, '$G_{R}$', label_duration)
-        self.add_axis('gy', 0.0, 0.3, '$G_{P}$', label_duration)
-        self.add_axis('gz', 0.0, 0.1, '$G_{S}$', label_duration)
+        self.add_axis('rf', 0.0, 0.7, '$RF$', label_duration, plot_kw=plot_kw, font_kw=font_kw)
+        self.add_axis('gx', 0.0, 0.5, '$G_{R}$', label_duration, plot_kw=plot_kw, font_kw=font_kw)
+        self.add_axis('gy', 0.0, 0.3, '$G_{P}$', label_duration, plot_kw=plot_kw, font_kw=font_kw)
+        self.add_axis('gz', 0.0, 0.1, '$G_{S}$', label_duration, plot_kw=plot_kw, font_kw=font_kw)
         pass
 
     def reset_axes(self):
         for axis in self.sqaxes.keys():
             self.reset_axis(axis)
 
-    def add_atom(self, atom):
+    def add_atom(self, atom, axis=None):
+        if not (axis is None):
+            atom = self.set_axis(atom, new_axis=axis)
         if isinstance(atom, (list, tuple)):
             for a in atom:
-                self.add_atom(a)
+                self.add_atom(a, axis=axis)
         else:
             if atom.sqaxis in self.sqaxes.keys():
                 self.sqaxes[atom.sqaxis]['atoms'].append(atom)
@@ -135,5 +137,5 @@ class SeqDiagram(object):
             max_ax = None
 
         for ax in set(axes) - set([max_ax]):
-            self.add_atom(misc.Line(self, ax, max_sum - sums[ax], plot_kw=plot_kw))
+            self.add_atom(misc.Line(self, ax, max_sum - sums[ax], plot_kw=plot_kw), axis=ax)
         pass
